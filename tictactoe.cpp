@@ -79,6 +79,9 @@ void cputurn(int& row, int& col, char board[3][3]) {
 }
 void playervcpu(bool& gameOver) { //finished...add logic for cpu
     char board[3][3];
+    int row, col;
+    char player;
+    int turns = 0;
 
     for (int i = 0; i < 3; i++) //sets all spaces on board to default '-'
     {
@@ -92,9 +95,6 @@ void playervcpu(bool& gameOver) { //finished...add logic for cpu
     printBoard(board);
     while (!gameOver)
     {
-        int row, col;
-        char player;
-        int turns = 0;
 
         cout << "\nIt is the player's turn what row (1-3) and column (1-3) would you like to choose: ";
         cin >> row >> col;
@@ -115,15 +115,14 @@ void playervcpu(bool& gameOver) { //finished...add logic for cpu
                 gameOver = true;
                 break;
             }
-            cout << "\nIt is the CPU's" << endl;
+            cout << "\nIt is the CPU's turn" << endl;
             cputurn(row, col, board); //cpu should have valid turn after running through loop
             board[row - 1][col - 1] = 'o';
             printBoard(board);
             player = 'o';
             if (checkWin(board, player))
             {
-                cout << "The has CPU won" << endl;
-                gameOver = true;
+                cout << "The CPU has won" << endl;
                 gameOver = true;
                 break;
             }
@@ -143,8 +142,58 @@ void playervcpu(bool& gameOver) { //finished...add logic for cpu
 
 void playervplayer(bool gameOver) {
     char board[3][3];
+    int row, col;
+    char player;
+    char marker;
+    int turns = 0;
+    int i = 0;
 
-    cout << "Player 1 will be using 'x' on the board, Player 2 will be using 'o'" << endl;
+    for (int i = 0; i < 3; i++) //sets all spaces on board to default '-'
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            board[i][j] = '-';
+        }
+    }
+
+    cout << "\nPlayer 1 will be using 'x' on the board, Player 2 will be using 'o'" << endl;
+    printBoard(board);
+
+    while (!gameOver)
+    {
+        if (i % 2 == 0)
+        {
+            player = '1';
+            marker = 'x';
+        }
+        else {
+            player = '2';
+            marker = 'o';
+        }
+        ++i;
+        cout << "\nIt is Player " << player << "'s turn what row (1-3) and column (1-3) would you like to choose: ";
+        cin >> row >> col;
+        if (checkTurn(row, col, board))
+        {
+            board[row - 1][col - 1] = marker;
+            printBoard(board);
+            if (checkWin(board, marker))
+            {
+                cout << "Congratulations Player " << player << " has won!" << endl;
+                gameOver = true;
+                break;
+            }
+            ++turns;
+            if(checkDraw(gameOver, turns)) {
+                cout << "The game has ended in a draw!" << endl;
+                gameOver = true;
+                break;
+            }
+        }   
+        else {
+            cout << "Row: " << row << " and column: " << col << " is not a valid turn. Try again." << endl;
+        }
+    }
 }
 
 int main() {
